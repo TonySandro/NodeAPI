@@ -1,5 +1,6 @@
 const LoginRouter = require("./login-router");
 const MissingParamError = require("../helpers/missing-param-error");
+const AnauthorizedError = require("../helpers/anauthorized-error");
 
 /* 
 Designer pattern Factory. 
@@ -82,7 +83,8 @@ describe("Login Router", () => {
         password: "invalidPassword",
       },
     };
-    const httpRepsonse = sut.route(httpRequest);
-    expect(httpRepsonse.statusCode).toBe(401);
+    const httpResponse = sut.route(httpRequest);
+    expect(httpResponse.statusCode).toBe(401);
+    expect(httpResponse.body).toEqual(new AnauthorizedError());
   });
 });
