@@ -9,8 +9,8 @@ afete todos os lugares que usavam o mesmo.
 const makeSut = () => {
   class AuthUseCaseSpy {
     auth(email, password) {
-      this.email = email
-      this.password = password
+      this.email = email;
+      this.password = password;
     }
   }
 
@@ -40,7 +40,7 @@ describe("Login Router", () => {
     const { sut } = makeSut();
     const httpRequest = {
       body: {
-        email: "anyEmail",
+        email: "anyEmail@mail.com",
       },
     };
     const httpResponse = sut.route(httpRequest);
@@ -65,12 +65,24 @@ describe("Login Router", () => {
     const { sut, authUseCaseSpy } = makeSut();
     const httpRequest = {
       body: {
-        email: "anyEmail",
+        email: "anyEmail@mail.com",
         password: "anyPassword",
       },
     };
     sut.route(httpRequest);
     expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
     expect(authUseCaseSpy.password).toBe(httpRequest.body.password);
+  });
+
+  test("Should return 401 when invalid credentials are provided.", () => {
+    const { sut } = makeSut();
+    const httpRequest = {
+      body: {
+        email: "invalidEmail@mail.com",
+        password: "invalidPassword",
+      },
+    };
+    const httpRepsonse = sut.route(httpRequest);
+    expect(httpRepsonse.statusCode).toBe(401);
   });
 });
