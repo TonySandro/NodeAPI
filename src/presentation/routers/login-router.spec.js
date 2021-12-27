@@ -7,12 +7,25 @@ Para evitar que quando mude a instancia de um objeto,
 afete todos os lugares que usavam o mesmo.
 */
 const makeSut = () => {
-  return new LoginRouter();
+  class AuthUseCaseSpy {
+    auth(email, password) {
+      this.email = email
+      this.password = password
+    }
+  }
+
+  const authUseCaseSpy = new AuthUseCaseSpy();
+  const sut = new LoginRouter(authUseCaseSpy);
+
+  return {
+    sut,
+    authUseCaseSpy,
+  };
 };
 
 describe("Login Router", () => {
   test("Should return 400 if no email is provided", () => {
-    const sut = makeSut();
+    const { sut } = makeSut();
     const httpRequest = {
       body: {
         password: "anyPassword",
@@ -24,10 +37,10 @@ describe("Login Router", () => {
   });
 
   test("Should return 400 if no password is provided", () => {
-    const sut = makeSut();
+    const { sut } = makeSut();
     const httpRequest = {
       body: {
-        email: "any_email",
+        email: "anyEmail",
       },
     };
     const httpResponse = sut.route(httpRequest);
@@ -36,22 +49,28 @@ describe("Login Router", () => {
   });
 
   test("Should return 500 if no hettpRequest is provided", () => {
-    const sut = makeSut();
+    const { sut } = makeSut();
     const httpResponse = sut.route();
     expect(httpResponse.statusCode).toBe(500);
   });
 
   test("Should return 500 if hettpRequest has no body", () => {
-    const sut = makeSut();
+    const { sut } = makeSut();
     const httpRequest = {};
     const httpResponse = sut.route(httpRequest);
     expect(httpResponse.statusCode).toBe(500);
   });
 
-  // test("Should call AuthUseCase with correct params", () => {
-  //   const sut = makeSut();
-  //   const httpRequest = {};
-  //   const httpResponse = sut.route(httpRequest);
-  //   expect(httpResponse.statusCode).toBe(500);
-  // });
+  test("Should call AuthUseCaseSpy with correct params.", () => {
+    const { sut, authUseCaseSpy } = makeSut();
+    const httpRequest = {
+      body: {
+        email: "anyEmail",
+        password: "anyPassword",
+      },
+    };
+    sut.route(httpRequest);
+    expect(authUseCaseSpy.email).toBe(httpRequest.body.email);
+    expect(authUseCaseSpy.password).toBe(httpRequest.body.password);
+  });
 });
