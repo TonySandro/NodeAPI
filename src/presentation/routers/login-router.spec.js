@@ -1,8 +1,10 @@
 const LoginRouter = require("./login-router");
-const MissingParamError = require("../helpers/missing-param-error");
-const InvalidParamError = require("../helpers/InvalidParam-error");
-const AnauthorizedError = require("../helpers/anauthorized-error");
-const ServerError = require("../helpers/server-error");
+const {
+  MissingParamError,
+  InvalidParamError,
+  AnauthorizedError,
+  ServerError,
+} = require("../errors");
 
 /* 
 Designer pattern Factory. 

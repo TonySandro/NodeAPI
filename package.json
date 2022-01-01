@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll"
+    "start": "node src/main/index.js",
+    "test": "jest --watch --colors --noStackTrace --passWithNoTests"
   },
   "keywords": [],
   "author": "Tony Sandro",
